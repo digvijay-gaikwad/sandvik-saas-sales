@@ -17,8 +17,8 @@
     }
     .sandvik-yellow { color: #ffc72c; }
     .sandvik-dark-bg { background-color: #272c35; }
-    .slide-container { display: none; animation: fadeIn 0.5s ease-in-out; }
-    .slide-container.active { display: block; }
+    .slide { display: none; animation: fadeIn 0.5s ease-in-out; }
+    .slide.active { display: block; }
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.98); }
       to { opacity: 1; transform: scale(1); }
@@ -54,22 +54,83 @@
       const slidesData = [
         {
           type: 'intro',
-          logo_url: 'https://www.ctemag.com/sites/default/files/buyers_guide_images/sandvik_coromant_logo_black_rgb300.jpg',
+          logo_url: '',
           name: 'Digvijay Gaikwad',
           position: 'Digital Product Specialist',
-          statement: 'Thank you for the insightful conversation. Here are my thoughts on the SaaS and subscription model.'
+          statement: 'Thank you for the insightful conversation. Elaborating on our discussion, here are my further thoughts and views regarding the SaaS and subscription model for a solution like CoroPlus®.'
         },
         {
           type: 'pros_cons',
-          title: 'Pros & Cons of SaaS',
+          title: 'Analysis of the SaaS Delivery Model',
           pros: [
-            'Lower upfront cost.',
-            'Rapid deployment.',
-            'Always updated.'
+            'Reduces customer\'s upfront cost (OpEx vs CapEx).',
+            'Enables rapid deployment and scalability.',
+            'Ensures all users are on the latest, most secure version.',
+            'Accessible from anywhere, supporting modern workflows.'
           ],
           cons: [
-            'Internet dependent.',
-            'Data privacy concerns.'
+            'Dependency on internet connectivity.',
+            'Customer concerns over data security and privacy.',
+            'Less customization compared to on-premise solutions.',
+            'Perceived loss of control for the customer.'
+          ]
+        },
+        {
+          type: 'pros_cons',
+          title: 'Analysis of the Subscription Revenue Model',
+          pros: [
+            'Creates predictable, recurring revenue for Sandvik.',
+            'Builds long-term customer relationships vs. transactions.',
+            'Lowers the barrier to entry for new customers.',
+            'Provides clear pathways for upselling/cross-selling.'
+          ],
+          cons: [
+            'Susceptible to churn if value is not consistently proven.',
+            'Requires investment in a Customer Success function.',
+            'Market can be sensitive to price increases.',
+            'Potential for "subscription fatigue" among customers.'
+          ]
+        },
+        {
+          type: 'synergy_watchout',
+          title: 'The Strategic Synergy & Key Considerations',
+          synergy_text: 'SaaS + Subscription is a powerful combination because it aligns Sandvik\'s success directly with the customer\'s success. The SaaS model delivers continuous value through innovation and updates, while the subscription model captures that value over time, funding further innovation. This creates a virtuous cycle of customer retention and growth.',
+          watchouts: [
+            {
+              heading: 'Value Alignment',
+              text: 'Ensure the price of the subscription always corresponds to the tangible value and ROI the customer is receiving.'
+            },
+            {
+              heading: 'Customer Adoption',
+              text: 'The biggest risk is a customer paying for but not using the software. A focus on onboarding and adoption is critical.'
+            },
+            {
+              heading: 'Competitive Pressure',
+              text: 'Agile, software-first competitors can emerge quickly. Continuous innovation is key to maintaining a leadership position.'
+            }
+          ]
+        },
+        {
+          type: 'strategic_analysis',
+          title: 'Strategic Analysis for CoroPlus® Growth',
+          columns: [
+            {
+              heading: 'SWOT Analysis',
+              points: [
+                { type: 'Strength', text: 'Brand trust & existing customer base of Sandvik Coromant.' },
+                { type: 'Weakness', text: 'Potential adoption friction in traditionalist, non-digital shops.' },
+                { type: 'Opportunity', text: 'Huge demand for Industry 4.0 solutions to improve supply chain resilience.' },
+                { type: 'Threat', text: 'Competition from agile, software-first startups and major cybersecurity risks.' }
+              ]
+            },
+            {
+              heading: 'Three Horizons of Growth',
+              points: [
+                { type: 'H1: Defend & Extend', text: 'Deepen CoroPlus® integration with Sandvik\'s core tooling offers, enhancing their combined value.' },
+                { type: 'H2: Build New Business', text: 'Expand into adjacent modules (e.g., sustainability/energy tracking) and partner with ERPs.' },
+                { type: 'H3: Create New Options', text: 'Explore disruptive models like "Machining-as-a-Service" or creating an open developer platform.' }
+              ]
+            }
           ]
         },
         {
@@ -81,69 +142,121 @@
         }
       ];
 
-      let currentSlideIndex = 0;
       const deck = document.getElementById('deck');
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
       const slideCounter = document.getElementById('slide-counter');
+      let currentSlideIndex = 0;
 
-      function renderSlide(index) {
-        const data = slidesData[index];
-        let content = '';
+      function renderSlides() {
+        deck.innerHTML = '';
+        slidesData.forEach((data, index) => {
+          let content = '';
+          let slideContainer = document.createElement('div');
+          slideContainer.className = 'slide';
 
-        if (data.type === 'intro') {
-          content = `
+          switch (data.type) {
+            case 'intro':
+              content = `
             <div class="text-center h-full flex flex-col justify-center">
-              <img src="${data.logo_url}" alt="Sandvik Coromant Logo" class="h-12 mx-auto mb-8" />
+              <img src="https://www.ctemag.com/sites/default/files/buyers_guide_images/sandvik_coromant_logo_black_rgb300.jpg" alt="Sandvik Coromant Logo" class="h-12 mx-auto mb-8" />
               <h1 class="text-5xl font-bold text-slate-800">${data.name}</h1>
               <p class="mt-2 text-2xl font-medium sandvik-yellow">${data.position}</p>
               <div class="w-20 h-1.5 bg-yellow-400 mx-auto my-8 rounded"></div>
               <p class="mt-4 text-xl max-w-3xl mx-auto leading-relaxed text-slate-700">${data.statement}</p>
-            </div>
-          `;
-        } else if (data.type === 'pros_cons') {
-          content = `
-            <div class="h-full flex flex-col justify-center">
-              <h2 class="text-3xl font-bold text-center text-slate-800">${data.title}</h2>
-              <div class="mt-8 grid grid-cols-2 gap-8">
-                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
-                  <h3 class="font-semibold text-lg text-green-800">Pros</h3>
-                  <ul class="mt-2 space-y-2">
-                    ${data.pros.map(p => `<li class="flex items-start"><span class="text-green-600 mr-2 mt-1">&#10003;</span><span>${p}</span></li>`).join('')}
-                  </ul>
                 </div>
-                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                  <h3 class="font-semibold text-lg text-red-800">Cons</h3>
-                  <ul class="mt-2 space-y-2">
-                    ${data.cons.map(c => `<li class="flex items-start"><span class="text-red-600 mr-2 mt-1">&#10007;</span><span>${c}</span></li>`).join('')}
-                  </ul>
+              `;
+              break;
+            case 'pros_cons':
+              content = `
+                <div>
+                  <h2 class="text-3xl font-bold text-center text-slate-800">${data.title}</h2>
+                  <div class="mt-8 grid grid-cols-2 gap-8">
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                      <h3 class="font-semibold text-lg text-green-800">Pros</h3>
+                      <ul class="mt-2 space-y-2">
+                        ${data.pros.map(p => `<li class="flex items-start"><span class="text-green-600 mr-2 mt-1">&#10003;</span><span>${p}</span></li>`).join('')}
+                      </ul>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                      <h3 class="font-semibold text-lg text-red-800">Cons</h3>
+                      <ul class="mt-2 space-y-2">
+                        ${data.cons.map(c => `<li class="flex items-start"><span class="text-red-600 mr-2 mt-1">&#10007;</span><span>${c}</span></li>`).join('')}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          `;
-        } else if (data.type === 'contact') {
-          content = `
-            <div class="text-center h-full flex flex-col justify-center">
-              <h2 class="text-4xl font-bold text-slate-800">${data.name}</h2>
-              <p class="text-2xl text-slate-600 mt-6">${data.email}</p>
-              <p class="text-2xl text-slate-600 mt-2">${data.phone}</p>
-              <div class="w-20 h-1.5 bg-yellow-400 mx-auto my-8 rounded"></div>
-              <p class="text-2xl text-slate-800">${data.statement}</p>
-            </div>
-          `;
-        }
+              `;
+              break;
+            case 'synergy_watchout':
+              content = `
+                <div>
+                  <h2 class="text-3xl font-bold text-center text-slate-800">${data.title}</h2>
+                  <div class="mt-6 bg-slate-50 p-6 rounded-lg border">
+                    <p class="text-lg text-slate-700">${data.synergy_text}</p>
+                  </div>
+                  <h3 class="font-semibold text-lg text-slate-800 mt-8 mb-4">Things to Watch Out For:</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    ${data.watchouts.map(item => `
+                      <div class="border-l-4 border-yellow-500 pl-4">
+                        <h4 class="font-semibold text-slate-900">${item.heading}</h4>
+                        <p class="text-slate-600">${item.text}</p>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+              break;
+            case 'strategic_analysis':
+              const typeColors = {
+                'Strength': 'text-green-500', 'Weakness': 'text-red-500',
+                'Opportunity': 'text-blue-500', 'Threat': 'text-orange-500',
+                'H1: Defend & Extend': 'text-slate-700', 'H2: Build New Business': 'text-slate-700', 'H3: Create New Options': 'text-slate-700'
+              };
+              content = `
+                <div>
+                  <h2 class="text-3xl font-bold text-center text-slate-800">${data.title}</h2>
+                  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    ${data.columns.map(col => `
+                      <div class="bg-slate-50 p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">${col.heading}</h3>
+                        <dl class="space-y-4">
+                          ${col.points.map(point => `
+                            <div>
+                              <dt class="font-semibold ${typeColors[point.type] || 'text-slate-900'}">${point.type}</dt>
+                              <dd class="text-slate-600 mt-1">${point.text}</dd>
+                            </div>
+                          `).join('')}
+                        </dl>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+              break;
+            case 'contact':
+              content = `
+                <div class="text-center h-full flex flex-col justify-center">
+                  <h2 class="text-4xl font-bold text-slate-800">${data.name}</h2>
+                  <p class="text-2xl text-slate-600 mt-6">${data.email}</p>
+                  <p class="text-2xl text-slate-600 mt-2">${data.phone}</p>
+                  <div class="w-20 h-1.5 bg-yellow-400 mx-auto my-8 rounded"></div>
+                  <p class="text-2xl text-slate-800">${data.statement}</p>
+                </div>
+              `;
+              break;
+          }
 
-        const slideContainer = document.createElement('div');
-        slideContainer.className = 'slide-container h-full';
-        slideContainer.innerHTML = content;
-        return slideContainer;
+          slideContainer.innerHTML = content;
+          deck.appendChild(slideContainer);
+        });
       }
 
       function updateDeckView() {
-        deck.innerHTML = '';
-        const slide = renderSlide(currentSlideIndex);
-        slide.classList.add('active');
-        deck.appendChild(slide);
+        const slides = deck.querySelectorAll('.slide');
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === currentSlideIndex);
+        });
 
         slideCounter.textContent = `Page ${currentSlideIndex + 1} of ${slidesData.length}`;
         prevBtn.disabled = currentSlideIndex === 0;
@@ -164,6 +277,7 @@
         }
       });
 
+      renderSlides();
       updateDeckView();
     });
   </script>
